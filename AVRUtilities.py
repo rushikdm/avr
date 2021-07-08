@@ -27,58 +27,58 @@ class AVRUtilities:
 	@staticmethod
 	def Compile(mcu, cfile, ofile, clean=True):
 		if not os.path.exists(cfile):
-			print("ERROR: " + cfile + " file does not exist.")
+			print(f"ERROR: {cfile} file does not exist.")
 			return False
 		if clean and os.path.exists(ofile):
 			try:
 				os.remove(ofile)
-				print("Deleted " + ofile + " before compile.")
+				print(f"Deleted {ofile} before compile.")
 			except OSError as e:
-				print("ERROR: %s - %s." % (e.filename, e.strerror))
+				print(f"ERROR: {e.filename} - {e.strerror})
 		mcu = mcus[mcu][0]
-		cmd = "avr-gcc -Wall -Os -mmcu=" + mcu + " -o " + ofile + " " + cfile
+		cmd = f"avr-gcc -Wall -Os -mmcu={mcu} -o {ofile} {cfile}"
 		AVRUtilities.ExecuteCommand(cmd)
 		if os.path.exists(ofile):
-			print("Successfully generated " + ofile)
+			print(f"Successfully generated {ofile}")
 		else:
-			print("ERROR in compilation for generation of " + ofile)
+			print(f"ERROR in compilation for generation of {ofile}")
 			return False
 		return True
 			
 	@staticmethod
 	def GenerateHexFile(ofile, hexfile, clean=True):
 		if not os.path.exists(ofile):
-			print("ERROR: " + ofile + " file does not exist.")
+			print(f"ERROR: {ofile} file does not exist.")
 			return False
 		if clean and os.path.exists(hexfile):
 			try:
 				os.remove(hexfile)
-				print("Deleted " + hexfile + " before generation of hex file.")
+				print(f"Deleted {hexfile} before generation of hex file.")
 			except OSError as e:
-				print("ERROR: %s - %s." % (e.filename, e.strerror))
+				print(f"ERROR: {e.filename} - {e.strerror}")
 				return False
-		cmd = "avr-objcopy -j .text -j .data -O ihex " + ofile + " " + hexfile
+		cmd = f"avr-objcopy -j .text -j .data -O ihex {ofile} {hexfile}"
 		AVRUtilities.ExecuteCommand(cmd)
 		if os.path.exists(hexfile):
-			print("Successfully generated " + hexfile)
+			print(f"Successfully generated {hexfile}")
 		else:
-			print("Error in generation of " + hexfile)
+			print(f"Error in generation of {hexfile}")
 			return False
 		return True
 	
 	@staticmethod
 	def Upload(mcu, hexfile, port):
 		if not os.path.exists(hexfile):
-			print("ERROR: " + hexfile + " does not exist.")
+			print(f"ERROR: {hexfile} does not exist.")
 			return False
 		mcu = mcus[mcu][1]
-		cmd = "avrdude -p " + mcu + " -c arduino -P " + port + " -b 19200 -U flash:w:" + hexfile + ":i"
+		cmd = f"avrdude -p {mcu} -c arduino -P {port} -b 19200 -U flash:w:{hexfile}:i"
 		AVRUtilities.ExecuteCommand(cmd)
 		
 	@staticmethod
 	def PerformAll(mcu, cfile, port):
 		if not os.path.exists(cfile):
-			print("ERROR: " + cfile + " does not exist.")
+			print(f"ERROR: {cfile} does not exist.")
 			return False
 		base_file_name = re.sub(".c", "", cfile)
 		ofile = base_file_name+".o"

@@ -34,7 +34,7 @@ class AVRUtilities:
 				os.remove(ofile)
 				print(f"Deleted {ofile} before compile.")
 			except OSError as e:
-				print(f"ERROR: {e.filename} - {e.strerror})
+				print(f"ERROR: {e.filename} - {e.strerror}")
 		mcu = mcus[mcu][0]
 		cmd = f"avr-gcc -Wall -Os -mmcu={mcu} -o {ofile} {cfile}"
 		AVRUtilities.ExecuteCommand(cmd)
@@ -103,8 +103,8 @@ class AVRUtilities:
 #AVRUtilities.ExecuteCommand("avr-objcopy -j .text -j .data -O ihex blower_pwm.o blower_pwm.hex")
 #AVRUtilities.ExecuteCommand("avrdude -p ATmega8 -c arduino -P COM3 -b 19200 -U flash:w:blower_pwm.hex:i")
 
-#AVRUtilities.Compile(MCU.ATmega8, "blower_pwm1.c", "blower_pwm.o")
+#AVRUtilities.Compile(MCU.ATmega8, "blower_pwm.c", "blower_pwm.o")
 #AVRUtilities.GenerateHexFile("blower_pwm.o", "blower_pwm.hex")
 #AVRUtilities.Upload(MCU.ATmega8, "blower_pwm.hex", "COM3")
-#AVRUtilities.PerformAll(MCU.ATmega8, "blower_pwm.c")
+#AVRUtilities.PerformAll(MCU.ATmega8, "blower_pwm.c", "COM18")
 

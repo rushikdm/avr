@@ -42,45 +42,45 @@ void HandleRunningState();
 
 void Setup7SegmentPins()
 {
-	SetPinAsOutput(DisplayPinA);
-	SetPinAsOutput(DisplayPinB);
-	SetPinAsOutput(DisplayPinC);
-	SetPinAsOutput(DisplayPinD);
-	SetPinAsOutput(DisplayPinE);
-	SetPinAsOutput(DisplayPinF);
-	SetPinAsOutput(DisplayPinG);
-	SetPinAsOutput(DisplayPinP);
+  SetPinAsOutput(DisplayPinA);
+  SetPinAsOutput(DisplayPinB);
+  SetPinAsOutput(DisplayPinC);
+  SetPinAsOutput(DisplayPinD);
+  SetPinAsOutput(DisplayPinE);
+  SetPinAsOutput(DisplayPinF);
+  SetPinAsOutput(DisplayPinG);
+  SetPinAsOutput(DisplayPinP);
 	
-	SetPinAsOutput(DisplayPinCC1);
-	SetPinAsOutput(DisplayPinCC2);
-	SetPinAsOutput(DisplayPinCC3);
+  SetPinAsOutput(DisplayPinCC1);
+  SetPinAsOutput(DisplayPinCC2);
+  SetPinAsOutput(DisplayPinCC3);
 }
 
 void StartTimer()
 {
-   /* Start of initialization for timer in CTC mode */
+  /* Start of initialization for timer in CTC mode */
     
-   OCR2 = 16;
+  OCR2 = 16;
     
-	 TCCR2 |= (1 << WGM21);
-   // Set to CTC Mode
+  TCCR2 |= (1 << WGM21);
+  // Set to CTC Mode
 
-   TIMSK |= (1 << OCIE2);
-   //Set interrupt on compare match
+  TIMSK |= (1 << OCIE2);
+  // Set interrupt on compare match
 
-   TCCR2 |= (1 << CS20) | (1 << CS21) | (1 << CS22);
-   // set prescaler to 1024
+  TCCR2 |= (1 << CS20) | (1 << CS21) | (1 << CS22);
+  // set prescaler to 1024
     
-   /* End of initialization for timer in CTC mode */
+  /* End of initialization for timer in CTC mode */
     
-   sei();				//Enable Global Interrupt
+  sei(); //Enable Global Interrupt
 }
 
 void setup()
 {
-	SetPinAsInput(IncreasePin);
-	SetPinAsInput(StartPin);
-	SetPinAsOutput(OutputPin);
+  SetPinAsInput(IncreasePin);
+  SetPinAsInput(StartPin);
+  SetPinAsOutput(OutputPin);
   
   Setup7SegmentPins();
   StartTimer();
@@ -93,76 +93,78 @@ int main(void)
   
   while(1)
   {
-  	const bool high = GetPinState(StartPin) == HIGH ? true : false;
-  	const ReleaseType rt = startButton.process(high);
-  	if(NO_PRESS != rt)
-  	{
-  		runningState = true;
-  	}
+    const bool high = GetPinState(StartPin) == HIGH ? true : false;
+    const ReleaseType rt = startButton.process(high);
+    if(NO_PRESS != rt)
+    {
+      runningState = true;
+      timems = (uint32_t)digits[0] + 10 * (uint32_t)digits[1] + 100 * (uint32_t)digits[2];
+      timems = 1000 * timems;
+    }
   	
-  	DisplayDigit();
-  	currDisplayDigitInd++;
-		if(currDisplayDigitInd > 2)
-			currDisplayDigitInd = 0;
+    DisplayDigit();
+    currDisplayDigitInd++;
+    if(currDisplayDigitInd > 2)
+    currDisplayDigitInd = 0;
   	
-  	if(!runningState)
-  	{
-  		HandleWaitingState();
-  	}
-  	else
-  	{
-  		HandleRunningState();
-  		if(digits[0] == 0 && digits[1] == 0 && digits[2] == 0)
-  		{
-  			SetPinStateLow(OutputPin);
-  			break;
-  		}
-  	}
-	}
+    if(!runningState)
+    {
+      HandleWaitingState();
+    }
+    else
+    {
+      HandleRunningState();
+      if(digits[0] == 0 && digits[1] == 0 && digits[2] == 0)
+      {
+        SetPinStateLow(OutputPin);
+        break;
+      }
+    }
+  }
 
-	return 0;
+  return 0;
 }
 
 void HandleWaitingState()
 {  		
- 	const bool high = GetPinState(IncreasePin) == HIGH ? true : false;
- 	const ReleaseType rt = increaseButton.process(high);
+  const bool high = GetPinState(IncreasePin) == HIGH ? true : false;
+  const ReleaseType rt = increaseButton.process(high);
  		
-	if(SIMPLE_PRESS == rt)
-	{
-		if(currDigitInd >= 0 && currDigitInd <= 2)
-		{
-			++digits[currDigitInd];
-			if(digits[currDigitInd] > 9)
-				digits[currDigitInd] = 0;
-		}
-	}
-	else if (LONG_PRESS == rt)
-	{
-		++currDigitInd;
-		if(currDigitInd > 2)
-			currDigitInd = 0;
-	}
+  if(SIMPLE_PRESS == rt)
+  {
+    if(currDigitInd >= 0 && currDigitInd <= 2)
+    {
+      ++digits[currDigitInd];
+      if(digits[currDigitInd] > 9)
+      digits[currDigitInd] = 0;
+    }
+  }
+  else if (LONG_PRESS == rt)
+  {
+    ++currDigitInd;
+    if(currDigitInd > 2)
+    currDigitInd = 0;
+  }
 }
 
 void HandleRunningState()
 {
-	int32_t times = timems / 1000;
-	digits[0] = times % 10;
+  int32_t times = timems / 1000;
+  digits[0] = times % 10;
 	
-	times = times/10;
-	digits[1] = times % 10;
+  times = times/10;
+  digits[1] = times % 10;
 	
-	times = times/10;
-	digits[2] = times % 10;
+  times = times/10;
+  digits[2] = times % 10;
 }
 
 ISR(TIMER2_COMP_vect)
 {
-	if(timems >= 20)
-		timems -= 20;
-	else
-		timems = 0;
+  if(timems >= 20)
+    timems -= 20;
+  else
+    timems = 0;
 }
 
 void DisplayDigit()
@@ -195,4 +197,3 @@ void clearDigitDisplay()
   PORTB &= 0b00000011;
   PORTC &= 0b00000000;
 }
-

@@ -15,7 +15,7 @@
 #define DisplayPinE    C,0
 #define DisplayPinF    B,2
 #define DisplayPinG    B,3
-#define DisplayPinP    C,2
+//#define DisplayPinP    C,2
 
 #define DisplayPinCC1    B,4
 #define DisplayPinCC2    B,5
@@ -49,7 +49,7 @@ void Setup7SegmentPins()
   SetPinAsOutput(DisplayPinE);
   SetPinAsOutput(DisplayPinF);
   SetPinAsOutput(DisplayPinG);
-  SetPinAsOutput(DisplayPinP);
+  //SetPinAsOutput(DisplayPinP);
 	
   SetPinAsOutput(DisplayPinCC1);
   SetPinAsOutput(DisplayPinCC2);
@@ -93,19 +93,22 @@ int main(void)
   
   while(1)
   {
-    const bool high = GetPinState(StartPin) == HIGH ? true : false;
-    const ReleaseType rt = startButton.process(high);
-    if(NO_PRESS != rt)
+    if(!runningState)
     {
-      runningState = true;
-      timems = (uint32_t)digits[0] + 10 * (uint32_t)digits[1] + 100 * (uint32_t)digits[2];
-      timems = 1000 * timems;
+      const bool high = GetPinState(StartPin) == HIGH ? true : false;
+      const ReleaseType rt = startButton.process(high);
+      if(NO_PRESS != rt)
+      {
+        runningState = true;
+        timems = (uint32_t)digits[0] + 10 * (uint32_t)digits[1] + 100 * (uint32_t)digits[2];
+        timems = 1000 * timems;
+      }
     }
   	
     DisplayDigit();
     currDisplayDigitInd++;
     if(currDisplayDigitInd > 2)
-    currDisplayDigitInd = 0;
+      currDisplayDigitInd = 0;
   	
     if(!runningState)
     {
@@ -136,14 +139,14 @@ void HandleWaitingState()
     {
       ++digits[currDigitInd];
       if(digits[currDigitInd] > 9)
-      digits[currDigitInd] = 0;
+        digits[currDigitInd] = 0;
     }
   }
   else if (LONG_PRESS == rt)
   {
     ++currDigitInd;
     if(currDigitInd > 2)
-    currDigitInd = 0;
+      currDigitInd = 0;
   }
 }
 

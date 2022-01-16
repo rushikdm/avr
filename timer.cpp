@@ -4,22 +4,22 @@
 #include <avr/interrupt.h>
 #include "myavrutils.h"
 
-#define IncreasePin  D,2
-#define StartPin     D,3
-#define OutputPin    D,4
+#define IncreasePin  B,5
+#define StartPin     B,4
+#define OutputPin    C,0
 
-#define DisplayPinA    C,5
-#define DisplayPinB    C,4
-#define DisplayPinC    C,3
-#define DisplayPinD    C,1
-#define DisplayPinE    C,0
-#define DisplayPinF    B,2
-#define DisplayPinG    B,3
-//#define DisplayPinP    C,2
+#define DisplayPinA    B,0
+#define DisplayPinB    D,0
+#define DisplayPinC    D,5
+#define DisplayPinD    D,6
+#define DisplayPinE    D,7
+#define DisplayPinF    D,1
+#define DisplayPinG    D,3
+//#define DisplayPinP    B,6
 
-#define DisplayPinCC1    B,4
-#define DisplayPinCC2    B,5
-#define DisplayPinCC3    B,1
+#define DisplayPinCC1    D,2
+#define DisplayPinCC2    D,4
+#define DisplayPinCC3    B,7
 
 bool runningState = false;
 Button increaseButton;
@@ -32,8 +32,8 @@ volatile int8_t currDisplayDigitInd = 0;
 volatile uint32_t timems = 0;
 
 // Common cathode digit hex values:
-uint8_t pbvalues[] = { 0x04, 0x00, 0x08, 0x08, 0x0c, 0x0c, 0x0c, 0x00, 0x0c, 0x0c };
-uint8_t pcvalues[] = { 0x3b, 0x18, 0x33, 0x3a, 0x18, 0x2a, 0x2b, 0x38, 0x3b, 0x3a };
+uint8_t pbvalues[] = { 0x01, 0x00, 0x01, 0x01, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01 };
+uint8_t pdvalues[] = { 0xc7, 0x84, 0x93, 0x96, 0xd4, 0x56, 0x57, 0x84, 0xd7, 0xd6 };
 
 void DisplayDigit();
 void clearDigitDisplay();
@@ -89,7 +89,7 @@ void setup()
 int main(void)
 {
   setup();
-  SetPinStateLow(DisplayPinP);
+  //SetPinStateLow(DisplayPinP);
   
   while(1)
   {
@@ -172,8 +172,8 @@ ISR(TIMER2_COMP_vect)
 
 void DisplayDigit()
 {
-  PORTB = (PORTB & 0b00000011) | (pbvalues[digits[currDisplayDigitInd]] & 0b11111100);
-  PORTC = 0b00111111 & pcvalues[digits[currDisplayDigitInd]];
+  PORTB = (PORTB & 0xFE) | pbvalues[digits[currDisplayDigitInd]];
+  PORTD = (PORTD & 0x28) | pdvalues[digits[currDisplayDigitInd]];
   
   if(currDisplayDigitInd == 0)
   {
@@ -197,6 +197,6 @@ void DisplayDigit()
 
 void clearDigitDisplay()
 {
-  PORTB &= 0b00000011;
-  PORTC &= 0b00000000;
+  PORTB &= 0b00000001;
+  PORTD &= 0b00010100;
 }

@@ -39,6 +39,9 @@ void DisplayDigit();
 void clearDigitDisplay();
 void HandleWaitingState();
 void HandleRunningState();
+void Setup7SegmentPins();
+void StartTimer();
+void setup();
 
 void Setup7SegmentPins()
 {

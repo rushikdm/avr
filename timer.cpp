@@ -33,7 +33,7 @@ volatile uint32_t timems = 0;
 
 // Common cathode digit hex values:
 uint8_t pbvalues[] = { 0x01, 0x00, 0x01, 0x01, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01 };
-uint8_t pdvalues[] = { 0xc7, 0x84, 0x93, 0x96, 0xd4, 0x56, 0x57, 0x84, 0xd7, 0xd6 };
+uint8_t pdvalues[] = { 0xe3, 0x21, 0xc9, 0x69, 0x2b, 0x6a, 0xea, 0x21, 0xeb, 0x6b };
 
 void DisplayDigit();
 void clearDigitDisplay();
@@ -173,7 +173,7 @@ ISR(TIMER2_COMP_vect)
 void DisplayDigit()
 {
   PORTB = (PORTB & 0xFE) | pbvalues[digits[currDisplayDigitInd]];
-  PORTD = (PORTD & 0x28) | pdvalues[digits[currDisplayDigitInd]];
+  PORTD = (PORTD & 0x14) | pdvalues[digits[currDisplayDigitInd]];
   
   if(currDisplayDigitInd == 0)
   {
@@ -197,6 +197,6 @@ void DisplayDigit()
 
 void clearDigitDisplay()
 {
-  PORTB &= 0b00000001;
-  PORTD &= 0b00010100;
+  PORTB &= 0xFE;
+  PORTD &= 0x14;
 }

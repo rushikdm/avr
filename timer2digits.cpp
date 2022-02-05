@@ -3,7 +3,7 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include "myavrutils.h"
-#include "multi7segment.h"
+#include "Multi7SegDisplay.h"
 
 #define IncreasePin  D,2
 #define StartPin     D,3
@@ -13,7 +13,7 @@ bool runningState = false;
 Button increaseButton;
 Button startButton;
 
-Multiplexed7Segment display;
+Multi7SegDisplay display;
 
 volatile uint32_t timems = 0;
 
@@ -126,5 +126,4 @@ ISR(TIMER2_COMP_vect)
   else
     timems = 0;
 }
-
 

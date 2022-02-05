@@ -2,7 +2,7 @@
 #define MULTIPLEXED_7SEGMENT
 
 #include "myavrutils.h"
-
+/*
 #define SegmentA    B,0
 #define SegmentB    D,0
 #define SegmentC    D,5
@@ -16,9 +16,22 @@
 #define Digit2Pin D,4
 #define Digit3Pin B,7
 
+*/
+#define SegmentA      C,5
+#define SegmentB      C,4
+#define SegmentC      C,3
+#define SegmentD      C,1
+#define SegmentE      C,0
+#define SegmentF      D,0
+#define SegmentG      D,1
+#define SegmentP      C,2
+
+#define Digit1Pin B,5
+#define Digit2Pin B,4
+
 class Multiplexed7Segment
 {
-  uint8_t digits[3];
+  uint8_t digits[2];
   uint8_t currInd;
   uint8_t digitInd;
   
@@ -74,7 +87,7 @@ public:
   {
     digits[0] = 1;
     digits[1] = 2;
-    digits[2] = 3;
+//    digits[2] = 3;
   }
 
   void Setup7SegmentPins()
@@ -87,16 +100,18 @@ public:
     SetPinAsOutput(SegmentF);
     SetPinAsOutput(SegmentG);
     //SetPinAsOutput(SegmentP);
+
+    //SetPinStateLow(SegmentP);
 	
     SetPinAsOutput(Digit1Pin);
     SetPinAsOutput(Digit2Pin);
-    SetPinAsOutput(Digit3Pin);
+    //SetPinAsOutput(Digit3Pin);
   }
  
   void ShiftDigit()
   {
     ++digitInd;
-    if(digitInd > 2)
+    if(digitInd > 1)
       digitInd = 0;
   }
   
@@ -115,37 +130,37 @@ public:
     {
       SetPinStateLow(Digit1Pin);
       SetPinStateHigh(Digit2Pin);
-      SetPinStateHigh(Digit3Pin);
+      //SetPinStateHigh(Digit3Pin);
     }
     
     if(currInd == 1)
     {
       SetPinStateHigh(Digit1Pin);
       SetPinStateLow(Digit2Pin);
-      SetPinStateHigh(Digit3Pin);
+//      SetPinStateHigh(Digit3Pin);
     }
     
     if(currInd == 2)
     {
       SetPinStateHigh(Digit1Pin);
       SetPinStateHigh(Digit2Pin);
-      SetPinStateLow(Digit3Pin);
+     // SetPinStateLow(Digit3Pin);
     }
 
     ++currInd;
-    if(currInd > 2)
+    if(currInd > 1)
       currInd = 0;
   }
   
   void SetDigit(const uint8_t index, const uint8_t value)
   {
-    if(index <= 2 && value <= 9)
+    if(index <= 1 && value <= 9)
       digits[index] = value;
   }
   
   uint8_t GetDigit(const uint8_t index)
   {
-    if(index > 2)
+    if(index > 1)
       return 0;
       
     return digits[index];
@@ -153,4 +168,3 @@ public:
 };
 
 #endif
-

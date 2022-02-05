@@ -24,7 +24,7 @@
 #define SegmentE      C,0
 #define SegmentF      D,0
 #define SegmentG      D,1
-#define SegmentP      C,2
+//#define SegmentP      C,2
 
 #define Digit1Pin B,5
 #define Digit2Pin B,4
@@ -73,13 +73,14 @@ class Multiplexed7Segment
       SetPinStateHigh(SegmentG);
   }
   
+  /*
   void DisplayFraction(const bool visible)
   {
     if(visible)
       SetPinStateHigh(SegmentP);
     else
       SetPinStateLow(SegmentP);
-  }
+  }*/
 
 public:  
   

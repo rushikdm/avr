@@ -1,5 +1,8 @@
 #ifndef MULTI7SEGDISPLAY_H
 #define MULTI7SEGDISPLAY_H
+
+#include "atmega8.h"
+
 /*
      A
    -------          
@@ -37,27 +40,6 @@
 #define Digit1Pin B,5
 #define Digit2Pin B,4
 
-class Pin
-{
-  volatile uint8_t* port;
-  uint8_t pin;
-  
-public:
-  
-  Pin(volatile uint8_t* iport, const uint8_t ipin): port(iport), pin(ipin) 
-  {
-  }
-  
-  void on() const
-  { 
-    (*port) |= (1 << pin);  
-  }
-  
-  void off() const
-  { 
-    (*port) &= ~(1 << pin);
-  }
-};
 
 class Multi7SegDisplay
 {
@@ -66,8 +48,9 @@ class Multi7SegDisplay
   uint8_t digitMInd = 0;
   uint8_t segMInd = 0;
   uint8_t digitInd = 0;
-  const Pin segPins[7] = { {&PORTC, 5}, {&PORTC, 4}, {&PORTC, 3}, {&PORTC, 1}, {&PORTC, 0}, {&PORTD, 0}, {&PORTD, 1}};
-  const Pin digitPins[2] = { {&PORTB, 5}, {&PORTB, 4}};
+                             //A   B   C   D   E   F  G
+  const uint8_t segPins[7] = { 28, 27, 26, 24, 23, 2, 3};
+  const uint8_t digitPins[2] = { 19, 18};
   
   bool present(const uint8_t idigit, const uint8_t iseg)
   {
@@ -87,27 +70,18 @@ public:
 
   void Setup7SegmentPins()
   {
-    SetPinAsOutput(SegmentA);
-    SetPinAsOutput(SegmentB);
-    SetPinAsOutput(SegmentC);
-    SetPinAsOutput(SegmentD);
-    SetPinAsOutput(SegmentE);
-    SetPinAsOutput(SegmentF);
-    SetPinAsOutput(SegmentG);
+    int ind = 0;
+    for(ind = 0; ind < 7; ++ind)
+      SetPinAsOutput(segPins[ind]);
 	
-    SetPinAsOutput(Digit1Pin);
-    SetPinAsOutput(Digit2Pin);
+    SetPinAsOutput(digitPins[0]);
+    SetPinAsOutput(digitPins[1]);
     
-    SetPinStateHigh(SegmentA);
-    SetPinStateHigh(SegmentB);
-    SetPinStateHigh(SegmentC);
-    SetPinStateHigh(SegmentD);
-    SetPinStateHigh(SegmentE);
-    SetPinStateHigh(SegmentF);
-    SetPinStateHigh(SegmentG);
+    for(ind = 0; ind < 7; ++ind)
+      SetPinValueHigh(segPins[ind]);
     
-    SetPinStateLow(Digit1Pin);
-    SetPinStateLow(Digit2Pin);
+    SetPinValueLow(digitPins[0]);
+    SetPinValueLow(digitPins[1]);
   }
  
   void ShiftDigit()
@@ -126,16 +100,19 @@ public:
   
   void Multiplex()
   {
-    segPins[segMInd > 0 ? (segMInd-1) : 6].on();
+    const uint8_t prev_pin = segPins[segMInd > 0 ? (segMInd-1) : 6];
+    SetPinValueHigh(prev_pin);
     
     if(segMInd == 0)
     {
-      digitPins[digitMInd].on();
-      digitPins[digitMInd > 0 ? (digitMInd-1) : 1].off();
+      const uint8_t prev_digit = digitPins[digitMInd > 0 ? (digitMInd-1) : 1];
+      SetPinValueLow(prev_digit);
+      
+      SetPinValueHigh(digitPins[digitMInd]);
     }
     
     if(present(digits[digitMInd], segMInd))
-      segPins[segMInd].off();
+      SetPinValueLow(segPins[segMInd]);
     
     ++segMInd;
     if(segMInd > 6)
@@ -163,4 +140,3 @@ public:
 };
 
 #endif
-

@@ -52,8 +52,8 @@ void StartTimer()
 
 void setup()
 {
-  SetPinAsInput(IncreasePin);
-  SetPinAsInput(StartPin);
+  //SetPinAsInput(IncreasePin);
+  //SetPinAsInput(StartPin);
   //SetPinAsOutput(OutputPin);
   
   display.Setup7SegmentPins();
@@ -71,12 +71,12 @@ int main(void)
   {
     if(!runningState)
     {
-      const bool high = IsPinHigh(StartPin) ? true : false;
-      const ReleaseType rt = startButton.process(high);
-      if(NO_PRESS != rt)
+      //const bool high = IsPinHigh(StartPin) ? true : false;
+      //const ReleaseType rt = startButton.process(high);
+      //if(NO_PRESS != rt)
       {
         runningState = true;
-        timems = (uint32_t)display.GetDigit(0) + 10 * (uint32_t)display.GetDigit(1);
+        timems = (uint32_t)display.GetDigit(0) + 10 * (uint32_t)display.GetDigit(1) + 100 * (uint32_t)display.GetDigit(2);
         timems = 1000 * timems;
       }
     }
@@ -85,7 +85,7 @@ int main(void)
   	
     if(!runningState)
     {
-      HandleWaitingState();
+      //HandleWaitingState();
     }
     else
     {
@@ -121,6 +121,10 @@ void HandleRunningState()
   times = times/10;
   digit = times % 10;
   display.SetDigit(1, digit);
+  
+  times = times/10;
+  digit = times % 10;
+  display.SetDigit(2, digit);
 }
 
 ISR(TIMER2_COMP_vect)
@@ -130,5 +134,4 @@ ISR(TIMER2_COMP_vect)
   else
     timems = 0;
 }
-
 

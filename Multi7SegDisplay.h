@@ -44,13 +44,13 @@
 class Multi7SegDisplay
 {
   const uint8_t segData[10] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F};
-  uint8_t digits[2] = {1, 2};
+  uint8_t digits[3] = {3, 2, 1};
   uint8_t digitMInd = 0;
   uint8_t segMInd = 0;
   uint8_t digitInd = 0;
                              //A   B   C   D   E   F  G
-  const uint8_t segPins[7] = { 28, 27, 26, 24, 23, 2, 3};
-  const uint8_t digitPins[2] = { 19, 18};
+  const uint8_t segPins[7] = { 14, 2, 11, 12, 13, 3, 5};
+  const uint8_t digitPins[3] = { 4, 6, 10};
   
   bool present(const uint8_t idigit, const uint8_t iseg)
   {
@@ -76,18 +76,20 @@ public:
 	
     SetPinAsOutput(digitPins[0]);
     SetPinAsOutput(digitPins[1]);
+    SetPinAsOutput(digitPins[2]);
     
     for(ind = 0; ind < 7; ++ind)
       SetPinValueHigh(segPins[ind]);
     
     SetPinValueLow(digitPins[0]);
     SetPinValueLow(digitPins[1]);
+    SetPinValueLow(digitPins[2]);
   }
  
   void ShiftDigit()
   {
     ++digitInd;
-    if(digitInd > 1)
+    if(digitInd > 2)
       digitInd = 0;
   }
   
@@ -119,20 +121,20 @@ public:
     {
       segMInd = 0;
       ++digitMInd;
-      if(digitMInd > 1)
+      if(digitMInd > 2)
         digitMInd = 0;
     }
   }
   
   void SetDigit(const uint8_t index, const uint8_t value)
   {
-    if(index <= 1 && value <= 9)
+    if(index <= 2 && value <= 9)
       digits[index] = value;
   }
   
   uint8_t GetDigit(const uint8_t index)
   {
-    if(index > 1)
+    if(index > 2)
       return 0;
       
     return digits[index];

@@ -55,12 +55,12 @@ class Button
 			press_count = 0;
 		}
 		
-		if(press_count > 400)
+		if(press_count > 100)
 			lastEvent = SIMPLE_PRESS;
-		if(press_count > 1000)
+		if(press_count > 500)
 			lastEvent = LONG_PRESS;
 
-		if(release_count > 200)
+		if(release_count > 100)
 		{
 			ReleaseType temp = lastEvent;
 			lastEvent = NO_PRESS;

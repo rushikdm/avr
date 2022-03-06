@@ -3,7 +3,7 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include "myavrutils.h"
-#include "Multi7SegDisplay.h"
+#include "Multi7SegDisplay_1.h"
 
 /*
 avr-gcc -Wall  -Os -mmcu=atmega8a -o timer2.o timer2.cpp -std=c++11
@@ -14,8 +14,8 @@ avrdude -p ATmega8 -c arduino -P COM18 -b 19200 -U flash:w:timer2.hex:i -F
 //#define IncreasePin  D,2
 //#define StartPin     D,3
 //#define OutputPin    C,0
-#define IncreasePin  4
-#define StartPin     5
+#define IncreasePin  24
+#define StartPin     25
 
 bool runningState = false;
 Button increaseButton;
@@ -52,8 +52,8 @@ void StartTimer()
 
 void setup()
 {
-  //SetPinAsInput(IncreasePin);
-  //SetPinAsInput(StartPin);
+  SetPinAsInput(IncreasePin);
+  SetPinAsInput(StartPin);
   //SetPinAsOutput(OutputPin);
   
   display.Setup7SegmentPins();
@@ -71,9 +71,9 @@ int main(void)
   {
     if(!runningState)
     {
-      //const bool high = IsPinHigh(StartPin) ? true : false;
-      //const ReleaseType rt = startButton.process(high);
-      //if(NO_PRESS != rt)
+      const bool high = IsPinHigh(StartPin) ? true : false;
+      const ReleaseType rt = startButton.process(high);
+      if(NO_PRESS != rt)
       {
         runningState = true;
         timems = (uint32_t)display.GetDigit(0) + 10 * (uint32_t)display.GetDigit(1) + 100 * (uint32_t)display.GetDigit(2);
@@ -82,10 +82,11 @@ int main(void)
     }
   	
     display.Multiplex();
+    //_delay_us(200);
   	
     if(!runningState)
     {
-      //HandleWaitingState();
+      HandleWaitingState();
     }
     else
     {
@@ -93,6 +94,7 @@ int main(void)
       if(timems == 0)
       {
         //SetPinStateLow(OutputPin);
+        display.ClearDisplay();
         break;
       }
     }

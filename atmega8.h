@@ -167,7 +167,7 @@ PortC portc;
 PortD portd;
 Port* _atmega8a_ports[4] = {&porta, &portb, &portc, &portd};
 
-void _get_port_and_pin(const uint8_t iPin, Port* oPort, uint8_t* oPin)
+void _get_port_and_pin(const uint8_t iPin, Port*& oPort, uint8_t* oPin)
 {
   oPort = 0;
   *oPin = 100;

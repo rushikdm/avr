@@ -3,17 +3,14 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include "myavrutils.h"
-#include "Multi7SegDisplay_1.h"
+#include "Multi7SegDisplay.h"
 
 /*
-avr-gcc -Wall  -Os -mmcu=atmega8a -o timer2.o timer2.cpp -std=c++11
-avr-objcopy -j .text -j .data -O ihex timer2.o timer2.hex
-avrdude -p ATmega8 -c arduino -P COM18 -b 19200 -U flash:w:timer2.hex:i -F
+avr-gcc -Wall  -Os -mmcu=atmega8a -o timer3.o timer3.cpp -std=c++11
+avr-objcopy -j .text -j .data -O ihex timer3.o timer3.hex
+avrdude -p ATmega8 -c arduino -P COM18 -b 19200 -U flash:w:timer3.hex:i -F
 */
 
-//#define IncreasePin  D,2
-//#define StartPin     D,3
-//#define OutputPin    C,0
 #define IncreasePin  24
 #define StartPin     25
 #define BuzzerPin    19

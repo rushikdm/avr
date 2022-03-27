@@ -46,7 +46,7 @@ class Multi7SegDisplay
     
 public:  
   
-  Multi7SegDisplay() : digits{5,1}, digitMInd(0), digitInd(0), glowDigit(true), blink(true), count(0) { }
+  Multi7SegDisplay() : digits{2,1}, digitMInd(0), digitInd(0), glowDigit(true), blink(true), count(0) { }
 
   void Setup7SegmentPins()
   {
@@ -90,19 +90,19 @@ public:
     {
       if(glowDigit)
       {
-        if(count >= 400)
+        if(count >= 600)
           glowDigit = false;
       }
       else
       {
-        if(count >= 800)
+        if(count >= 1200)
         {
           glowDigit = true;
           count = 0;
         }
       }
       
-      if(count < 800)
+      if(count < 1200)
         ++count;
       else
         count = 0;
@@ -160,7 +160,25 @@ public:
       
     return digits[index];
   }
+  
+  bool IsZero()
+  {
+    return (0 == digits[0] && 0 == digits[1]);
+  }
+  
+  void Decrease()
+  {
+    if(digits[0] > 0)
+    {
+      --digits[0];
+      return;
+    }
+    else if(digits[1] > 0)
+    {
+      digits[0] = 9;
+      --digits[1];
+    }
+  }
 };
 
 #endif
-

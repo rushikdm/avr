@@ -79,7 +79,7 @@ int main(void)
   while(!display.IsZero())
   {
     display.Multiplex();
-  	HandleRunningState();
+    HandleRunningState();
   }
 
   beep();

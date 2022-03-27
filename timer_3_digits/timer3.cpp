@@ -1,4 +1,4 @@
-#define F_CPU 8000000UL
+#define F_CPU 1000000UL
 //#include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
@@ -15,13 +15,14 @@ avrdude -p ATmega8 -c arduino -P COM18 -b 19200 -U flash:w:timer3.hex:i -F
 #define StartPin     25
 #define BuzzerPin    19
 
-bool runningState = false;
+volatile bool runningState = false;
+volatile bool time_changed = false;
+volatile uint32_t time_ms = 0;
+
 Button increaseButton;
 Button startButton;
 
 Multi7SegDisplay display;
-
-volatile uint32_t timems = 0;
 
 void HandleWaitingState();
 void HandleRunningState();
@@ -33,7 +34,7 @@ void StartTimer()
 {
   /* Start of initialization for timer in CTC mode */
     
-  OCR2 = 16;
+  OCR2 = 249;
     
   TCCR2 |= (1 << WGM21);
   // Set to CTC Mode
@@ -41,8 +42,8 @@ void StartTimer()
   TIMSK |= (1 << OCIE2);
   // Set interrupt on compare match
 
-  TCCR2 |= (1 << CS20) | (1 << CS21) | (1 << CS22);
-  // set prescaler to 1024
+  TCCR2 |= (1 << CS21);
+  // set prescaler to 8
     
   /* End of initialization for timer in CTC mode */
     
@@ -65,34 +66,20 @@ int main(void)
   setup();
   
   _delay_ms(100);
-  
-  while(1)
+  display.SetBlink(true);
+
+  while(!runningState)
   {
-    if(!runningState)
-    {
-      const bool high = IsPinHigh(StartPin) ? true : false;
-      const ReleaseType rt = startButton.process(high);
-      if(NO_PRESS != rt)
-      {
-        runningState = true;
-        display.SetBlink(false);
-        timems = (uint32_t)display.GetDigit(0) + 10 * (uint32_t)display.GetDigit(1) + 100 * (uint32_t)display.GetDigit(2);
-        timems = 1000 * timems;
-      }
-    }
-  	
     display.Multiplex();
-  	
-    if(!runningState)
-    {
-      HandleWaitingState();
-    }
-    else
-    {
-      HandleRunningState();
-      if(timems == 0)
-        break;
-    }
+    HandleWaitingState();
+  }
+  
+  display.SetBlink(false);
+  
+  while(!display.IsZero())
+  {
+    display.Multiplex();
+  	HandleRunningState();
   }
 
   beep();
@@ -101,10 +88,33 @@ int main(void)
   return 0;
 }
 
+void HandleRunningState()
+{
+  if(time_changed)
+  {
+    time_changed = false;
+    if(time_ms < 500)
+      ++time_ms;
+    else
+    {
+      time_ms = 0;
+      display.Decrease();
+    }
+  }
+}
+
 void HandleWaitingState()
-{  		
-  const bool high = IsPinHigh(IncreasePin) ? true : false;
-  const ReleaseType rt = increaseButton.process(high);
+{
+  bool high = IsPinHigh(StartPin) ? true : false;
+  ReleaseType rt = startButton.process(high);
+  if(NO_PRESS != rt)
+  {
+    runningState = true;
+    return;
+  }
+    
+  high = IsPinHigh(IncreasePin) ? true : false;
+  rt = increaseButton.process(high);
  		
   if(SIMPLE_PRESS == rt)
     display.IncrementCurrentDigit();
@@ -112,38 +122,21 @@ void HandleWaitingState()
     display.ShiftDigit();
 }
 
-void HandleRunningState()
-{
-  int32_t times = timems / 1000;
-  uint8_t digit = times % 10;
-  display.SetDigit(0, digit);
-	
-  times = times/10;
-  digit = times % 10;
-  display.SetDigit(1, digit);
-  
-  times = times/10;
-  digit = times % 10;
-  display.SetDigit(2, digit);
-}
-
 ISR(TIMER2_COMP_vect)
 {
-  if(timems >= 17)
-    timems -= 17;
-  else
-    timems = 0;
+  time_changed = true;
 }
 
 void beep()
 {
   uint8_t ind = 0;
-  for(ind = 0; ind < 15; ++ind)
+  for(ind = 0; ind < 20; ++ind)
   {
+    display.Multiplex();
     SetPinValueHigh(BuzzerPin);
-    _delay_ms(20);
+    _delay_ms(200);
     SetPinValueLow(BuzzerPin);
-    _delay_ms(180);
+    _delay_ms(1800);
   }
 }
 

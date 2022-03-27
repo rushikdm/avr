@@ -106,19 +106,19 @@ public:
     {
       if(glowDigit)
       {
-        if(count >= 250)
+        if(count >= 400)
           glowDigit = false;
       }
       else
       {
-        if(count >= 500)
+        if(count >= 800)
         {
           glowDigit = true;
           count = 0;
         }
       }
       
-      if(count < 500)
+      if(count < 800)
         ++count;
       else
         count = 0;
@@ -176,7 +176,33 @@ public:
       
     return digits[index];
   }
+  
+  bool IsZero()
+  {
+    return (0 == digits[0] && 0 == digits[1] && 0 == digits[2]);
+  }
+  
+  void Decrease()
+  {
+    if(digits[0] > 0)
+    {
+      --digits[0];
+      return;
+    }
+    else if(digits[1] > 0)
+    {
+      digits[0] = 9;
+      --digits[1];
+      return;
+    }
+    else if(digits[2] > 0)
+    {
+      digits[0] = 9;
+      digits[1] = 9;
+      --digits[2];
+      return;
+    }
+  }
 };
 
 #endif
-

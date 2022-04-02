@@ -34,7 +34,7 @@ void StartTimer()
 {
   /* Start of initialization for timer in CTC mode */
     
-  OCR2 = 249;
+  OCR2 = 244;
     
   TCCR2 |= (1 << WGM21);
   // Set to CTC Mode

@@ -8,7 +8,7 @@
 /*
 avr-gcc -Wall  -Os -mmcu=atmega8a -o timer3.o timer3.cpp -std=c++11
 avr-objcopy -j .text -j .data -O ihex timer3.o timer3.hex
-avrdude -p ATmega8 -c arduino -P COM18 -b 19200 -U flash:w:timer3.hex:i -F
+avrdude -p ATmega8 -c arduino -P COM4 -b 19200 -U flash:w:timer3.hex:i -F
 */
 
 #define IncreasePin  24
@@ -43,7 +43,7 @@ void StartTimer()
   // Set interrupt on compare match
 
   TCCR2 |= (1 << CS21);
-  // set prescaler to 8
+  // set prescaler to 8. This will trigger timer after every 2 milli-seconds.
     
   /* End of initialization for timer in CTC mode */
     
@@ -93,7 +93,11 @@ void HandleRunningState()
   if(time_changed)
   {
     time_changed = false;
-    if(time_ms < 500)
+	// We want display to change (dicrease) after every one minute.
+	// 1 minute = 60 seconds = 60 * 1000 milli-seconds = 60,000 milli-seconds.
+	// Timer event is called after every 2 milli-seconds. 
+	// Hence change display after the value reaches 30000.
+    if(time_ms < 30000)
       ++time_ms;
     else
     {
@@ -139,4 +143,3 @@ void beep()
     _delay_ms(1800);
   }
 }
-

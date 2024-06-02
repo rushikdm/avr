@@ -1,12 +1,15 @@
-/*
-avr-gcc -Wall -Os -mmcu=atmega8 -o pns.o pns.c
-avr-objcopy -j .text -j .data -O ihex pns.o pns.hex
-avrdude -p ATmega8 -c arduino -P COM3 -b 19200 -U flash:w:pns.hex:i
-*/
 #define F_CPU 8000000UL
 #include <avr/io.h>
 //#include <util/delay.h>
 #include <avr/interrupt.h>
+//#include "myavrutils.h"
+#include "atmega8.h"
+
+/*
+avr-gcc -Wall -Os -mmcu=atmega8 -o pns.o pns.cpp
+avr-objcopy -j .text -j .data -O ihex pns.o pns.hex
+avrdude -p ATmega8 -c arduino -P COM3 -b 19200 -U flash:w:pns.hex:i
+*/
 
 #define LOW 0
 #define HIGH 1
@@ -31,6 +34,9 @@ avrdude -p ATmega8 -c arduino -P COM3 -b 19200 -U flash:w:pns.hex:i
 
 #define DisplayPinCC1    18
 #define DisplayPinCC2    19
+
+//Button increasePWSBtn;
+//Button decreasePWSBtn;
 
 // RESET 1
 // GND   8   22
@@ -153,17 +159,17 @@ ISR(INT1_vect)
 
 ISR(TIMER2_COMP_vect)
 {
-    if(HIGH == GetPinState(CircuitCompletePin))
+    if(IsPinHigh(CircuitCompletePin))
     {
       if(pwm2_ind <= 0)
-        SetPinStateHigh(TwentyMSPin);
+        SetPinValueHigh(TwentyMSPin);
       else
-        SetPinStateLow(TwentyMSPin);
+        SetPinValueLow(TwentyMSPin);
     
       if(pwm2_ind <= 8)
-        SetPinStateHigh(BuzzerPin);
+        SetPinValueHigh(BuzzerPin);
       else
-        SetPinStateLow(BuzzerPin);
+        SetPinValueLow(BuzzerPin);
   
       pwm2_ind++;
       if(pwm2_ind >= 50)
@@ -171,8 +177,8 @@ ISR(TIMER2_COMP_vect)
     }
     else
     {
-      SetPinStateLow(TwentyMSPin);
-      SetPinStateLow(BuzzerPin);
+      SetPinValueLow(TwentyMSPin);
+      SetPinValueLow(BuzzerPin);
     }    
 }
 
@@ -191,15 +197,15 @@ void displayDigit()
   
   if(currentDigitInd == 0)
   {
-    SetPinStateLow(DisplayPinCC1);
-    SetPinStateHigh(DisplayPinCC2);
-    SetPinStateLow(DisplayPinP);
+    SetPinValueLow(DisplayPinCC1);
+    SetPinValueHigh(DisplayPinCC2);
+    SetPinValueLow(DisplayPinP);
   }
   else
   {
-    SetPinStateHigh(DisplayPinCC1);
-    SetPinStateLow(DisplayPinCC2);
-    SetPinStateHigh(DisplayPinP);
+    SetPinValueHigh(DisplayPinCC1);
+    SetPinValueLow(DisplayPinCC2);
+    SetPinValueHigh(DisplayPinP);
   }
 }
 

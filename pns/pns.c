@@ -1,3 +1,8 @@
+/*
+avr-gcc -Wall -Os -mmcu=atmega8 -o pns.o pns.c
+avr-objcopy -j .text -j .data -O ihex pns.o pns.hex
+avrdude -p ATmega8 -c arduino -P COM3 -b 19200 -U flash:w:pns.hex:i
+*/
 #define F_CPU 8000000UL
 #include <avr/io.h>
 //#include <util/delay.h>

@@ -28,14 +28,6 @@ class PNSRange
   		return m_ampere_values[m_index];
   	}
   	
-  	uint8_t getAmpereDigit(const bool first_digit)
-  	{
-			if(first_digit)
-				return m_ampere_values[m_index] % 10;
-
-			return m_ampere_values[m_index]/10 % 10;
-  	}
-  	
   	uint16_t getPWMValue()
   	{
   		return m_pwm_values[m_index];
@@ -48,4 +40,3 @@ class PNSRange
 };
 
 #endif
-

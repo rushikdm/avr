@@ -38,14 +38,17 @@ class PNSDisplay
   bool     glowDigit;
   bool     blink;
   uint16_t count;
-                                 //A   B   C   D   E   F  G
-  const uint8_t m_segmentPins[7] = { 14, 2,  11, 12, 13, 3, 5};
+                                    //A   B   C   D   E   F  G
+  const uint8_t m_segmentPins[7] = { 14,  2,  11, 12, 13, 3, 5};
   const uint8_t m_fractionPin = 10; // To-do change P pin
   const uint8_t m_digitCCPins[2] = { 4, 6 }; // Common Cathode pins for two segments
    
 public:  
   
-  PNSDisplay() : m_digits{2,1}, m_multiplex_index(0), digitInd(0), glowDigit(true), blink(true), count(0) { }
+  PNSDisplay(const uint8_t ampere_value) : m_multiplex_index(0), digitInd(0), glowDigit(true), blink(true), count(0) 
+  { 
+  	setAmpereValue(ampere_value);
+  }
 
   void setup()
   {
@@ -135,6 +138,9 @@ public:
   {
     if(value <= 5)
       m_ampere_value = value;
+      
+		m_digits[0] = value % 10;
+		m_digits[1] = value/10 % 10;
   }
   
 };

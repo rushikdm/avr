@@ -30,7 +30,7 @@ void setupInterrupts();
 void setupTimer();
 
 PNSRange pnsRange;
-PNSDisplay pnsDisplay;
+PNSDisplay pnsDisplay(pnsRange.getAmpereValue());
 
 volatile uint8_t pwm2_ind = 0;
 

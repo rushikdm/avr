@@ -3,25 +3,6 @@
 
 #include "atmega8.h"
 
-/*
-#define HIGH 1
-#define LOW 0
-
-#define _SetPinAsInput(ddr, pos) DDR##ddr &= ~(1 << DDR##ddr##pos)
-#define SetPinAsInput(pin) _SetPinAsInput(pin)
-
-#define _SetPinAsOutput(ddr, pos) DDR##ddr |= (1 << DDR##ddr##pos)
-#define SetPinAsOutput(pin) _SetPinAsOutput(pin)
-
-#define _SetPinStateLow(port, pos) PORT##port &= ~(1 << PORT##port##pos)
-#define SetPinStateLow(pin) _SetPinStateLow(pin)
-
-#define _SetPinStateHigh(port, pos) PORT##port |= (1 << PORT##port##pos)
-#define SetPinStateHigh(pin) _SetPinStateHigh(pin)
-
-#define _GetPinState(port, pos) ((PIN##port & (1 << P##port##pos)) ? HIGH : LOW)
-#define GetPinState(pin) _GetPinState(pin)
-*/
 enum ReleaseType
 {
   NO_PRESS=0,
@@ -38,6 +19,11 @@ class PushButton
 	
   public:
   Button(const uint8_t pin) : m_pin{pin}, m_press_count{0}, m_release_count{0}, m_lastEvent{NO_PRESS} { }
+
+  setup()
+  {
+    SetPinAsInput(m_pin);
+  }
 	
   ReleaseType process()
   {

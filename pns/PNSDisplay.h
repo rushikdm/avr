@@ -31,7 +31,7 @@
 
 class PNSDisplay
 {
-	uint8_t  m_ampere_value;
+  uint8_t  m_ampere_value;
   uint8_t  m_digits[2];
   uint8_t  m_multiplex_index;
   uint8_t  digitInd;
@@ -42,12 +42,13 @@ class PNSDisplay
   const uint8_t m_segmentPins[7] = { 14,  2,  11, 12, 13, 3, 5};
   const uint8_t m_fractionPin = 10; // To-do change P pin
   const uint8_t m_digitCCPins[2] = { 4, 6 }; // Common Cathode pins for two segments
+  const uint8_t m_sevenSegments[10] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F};
    
 public:  
   
   PNSDisplay(const uint8_t ampere_value) : m_multiplex_index(0), digitInd(0), glowDigit(true), blink(true), count(0) 
   { 
-  	setAmpereValue(ampere_value);
+    setAmpereValue(ampere_value);
   }
 
   void setup()
@@ -56,7 +57,7 @@ public:
     for(ind = 0; ind < 7; ++ind)
       SetPinAsOutput(m_segmentPins[ind]);
 	
-		SetPinAsOutput(m_fractionPin);
+    SetPinAsOutput(m_fractionPin);
     SetPinAsOutput(m_digitCCPins[0]);
     SetPinAsOutput(m_digitCCPins[1]);
     
@@ -65,12 +66,12 @@ public:
  
   void clearDisplay()
   {
-  	int ind;
+    int ind;
     for(ind = 0; ind < 7; ++ind)
       SetPinValueLow(m_segmentPins[ind]);
 
-		SetPinValueLow(m_fractionPin);
-	  SetPinValueHigh(m_digitCCPins[0]);
+    SetPinValueLow(m_fractionPin);
+    SetPinValueHigh(m_digitCCPins[0]);
     SetPinValueHigh(m_digitCCPins[1]);
   }
   
@@ -127,9 +128,15 @@ public:
 
     const uint8_t prev_digit_pin = m_digitCCPins[m_multiplex_index > 0 ? (m_multiplex_index-1) : 1];
     SetPinValueHigh(prev_digit_pin);
-    
-    //PORTB = (PORTB & 0b11111110) | (0b00000001 & port_B[digit]);
-    //PORTD = (PORTD & 0b00010100) | (0b11101011 & port_D[digit]);
+
+    int ind;
+    for(ind=0;ind<7;++ind)
+    {
+      if(m_sevenSegments[digit] & (1 << ind))
+        SetPinValueHigh(m_segmentPins[ind]);
+      else
+        SetPinValueLow(m_segmentPins[ind]);
+    }
     
     SetPinValueLow(m_digitCCPins[m_multiplex_index]);
   }
@@ -139,10 +146,9 @@ public:
     if(value <= 5)
       m_ampere_value = value;
       
-		m_digits[0] = value % 10;
-		m_digits[1] = value/10 % 10;
+    m_digits[0] = value % 10;
+    m_digits[1] = value/10 % 10;
   }
-  
-};
+ };
 
 #endif

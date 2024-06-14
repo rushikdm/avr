@@ -39,9 +39,9 @@ class PNSDisplay
   bool     blink;
   uint16_t count;
                                     //A   B   C   D   E   F  G
-  const uint8_t m_segmentPins[7] = { 14,  2,  11, 12, 13, 3, 5};
-  const uint8_t m_fractionPin = 10; // To-do change P pin
-  const uint8_t m_digitCCPins[2] = { 4, 6 }; // Common Cathode pins for two segments
+  const uint8_t m_segmentPins[7] = { 28,  27,  26, 24, 23, 16, 17};
+  const uint8_t m_fractionPin = 25; // To-do change P pin
+  const uint8_t m_digitCCPins[2] = { 18, 19 }; // Common Cathode pins for two segments
   const uint8_t m_sevenSegments[10] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F};
    
 public:  

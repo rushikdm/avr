@@ -146,124 +146,108 @@ public:
  }
 };
 
-class Atmega8
+struct Atmega8
 {
-
-const uint8_t _atmega8a_pins[28] =  
-{  0x26  // 1  PC6 RESET 
- , 0x30  // 2  PD0
- , 0x31  // 3  PD1
- , 0x32  // 4  PD2
- , 0x33  // 5  PD3
- , 0x34  // 6  PD4
- , 0x00  // 7  VCC
- , 0x00  // 8  GND
- , 0x16  // 9  PB6
- , 0x17  // 10 PB7
- , 0x35  // 11 PD5
- , 0x36  // 12 PD6
- , 0x37  // 13 PD7
- , 0x10  // 14 PB0
- , 0x11  // 15 PB1
- , 0x12  // 16 PB2
- , 0x13  // 17 PB3
- , 0x14  // 18 PB4
- , 0x15  // 19 PB5
- , 0x00  // 20 AVCC
- , 0x00  // 21 AREF
- , 0x00  // 22 GND
- , 0x20  // 23 PC0
- , 0x21  // 24 PC1
- , 0x22  // 25 PC2
- , 0x23  // 26 PC3
- , 0x24  // 27 PC4
- , 0x25  // 28 PC5
-};
+  const uint8_t _atmega8a_pins[28] =  
+  {   0x26  // 1  PC6 RESET 
+    , 0x30  // 2  PD0
+    , 0x31  // 3  PD1
+    , 0x32  // 4  PD2
+    , 0x33  // 5  PD3
+    , 0x34  // 6  PD4
+    , 0x00  // 7  VCC
+    , 0x00  // 8  GND
+    , 0x16  // 9  PB6
+    , 0x17  // 10 PB7
+    , 0x35  // 11 PD5
+    , 0x36  // 12 PD6
+    , 0x37  // 13 PD7
+    , 0x10  // 14 PB0
+    , 0x11  // 15 PB1
+    , 0x12  // 16 PB2
+    , 0x13  // 17 PB3
+    , 0x14  // 18 PB4
+    , 0x15  // 19 PB5
+    , 0x00  // 20 AVCC
+    , 0x00  // 21 AREF
+    , 0x00  // 22 GND
+    , 0x20  // 23 PC0
+    , 0x21  // 24 PC1
+    , 0x22  // 25 PC2
+    , 0x23  // 26 PC3
+    , 0x24  // 27 PC4
+    , 0x25  // 28 PC5
+  };
 
   PortB portB;
   PortC portC;
   PortD portD;
-  Port* _atmega8a_ports[4] = {nullptr, &portB, &portC, &portD};
-
-  static void _get_port_and_pin(const uint8_t iPin, Port*& oPort, uint8_t* oPin)
-  {
-    oPort = 0;
-    *oPin = 100;
-
-    Atmega8 * pAtmega8 = getInstance();
-    if(!pAtmega8)
-      return;
-        
-    uint8_t port = pAtmega8->_atmega8a_pins[iPin-1] & 0xF0;
-    *oPin = pAtmega8->_atmega8a_pins[iPin-1] & 0x0F;
-    if(*oPin > 7)
-      return;
-
-    port = port >> 4;
-    if(port > 3)
-      return;
-  
-    oPort = pAtmega8->_atmega8a_ports[port];
-  }
-
- Atmega8()
- {
- }
-
- Atmega8 * getInstance()
- {
-   static Atmega8 * atmega8 = new Atmega8();
-   return atmega8;
- }
-
- public:
-  static void SetPinAsInput(const uint8_t iPin)
-  {
-    Port* pPort = 0;
-    uint8_t pin = 100;
-    _get_port_and_pin(iPin, pPort, &pin);
-    if(pPort)
-      pPort->SetPinAsInput(pin);
-  }
-
-  static void SetPinAsOutput(const uint8_t iPin)
-  {
-    Port* pPort = 0;
-    uint8_t pin = 100;
-    _get_port_and_pin(iPin, pPort, &pin);
-    if(pPort)
-      pPort->SetPinAsOutput(pin);
-  }
-
-  static uint8_t IsPinHigh(const uint8_t iPin)
-  {
-    Port* pPort = 0;
-    uint8_t pin = 100;
-    _get_port_and_pin(iPin, pPort, &pin);
-    if(!pPort)
-      return 0;
-    
-    return pPort->IsPinHigh(pin);
-  }
-
-  static void SetPinValueHigh(const uint8_t iPin)
-  {
-    Port* pPort = 0;
-    uint8_t pin = 100;
-    _get_port_and_pin(iPin, pPort, &pin);
-    if(pPort)
-      pPort->SetPinValueHigh(pin);
-  }
-
-  static void SetPinValueLow(const uint8_t iPin)
-  {
-    Port* pPort = 0;
-    uint8_t pin = 100;
-    _get_port_and_pin(iPin, pPort, &pin);
-    if(pPort)
-      pPort->SetPinValueLow(pin);
-  }
+  Port* _atmega8a_ports[3] = {&portB, &portC, &portD};
 };
+
+Atmega8 _atmega8;
+
+void _get_port_and_pin(const uint8_t iPin, Port*& oPort, uint8_t& oPin)
+{
+  oPort = 0;
+  oPin = 100;
+
+  if( iPin > 28 || iPin == 7 || iPin == 8 || iPin == 20 || iPin == 21 || iPin == 22 ) 
+    return;
+
+  oPin = _atmega8._atmega8a_pins[iPin-1] & 0x0F;
+
+  uint8_t port = _atmega8._atmega8a_pins[iPin-1] & 0xF0;
+  port = port >> 4;
+  oPort = _atmega8->_atmega8a_ports[port-1];
+}
+
+void SetPinAsInput(const uint8_t iPin)
+{
+  Port* pPort = 0;
+  uint8_t pin = 100;
+  _get_port_and_pin(iPin, pPort, pin);
+  if(pPort)
+    pPort->SetPinAsInput(pin);
+}
+
+void SetPinAsOutput(const uint8_t iPin)
+{
+  Port* pPort = 0;
+  uint8_t pin = 100;
+  _get_port_and_pin(iPin, pPort, pin);
+  if(pPort)
+    pPort->SetPinAsOutput(pin);
+}
+
+uint8_t IsPinHigh(const uint8_t iPin)
+{
+  Port* pPort = 0;
+  uint8_t pin = 100;
+  _get_port_and_pin(iPin, pPort, pin);
+  if(!pPort)
+    return 0;
+    
+  return pPort->IsPinHigh(pin);
+}
+
+void SetPinValueHigh(const uint8_t iPin)
+{
+  Port* pPort = 0;
+  uint8_t pin = 100;
+  _get_port_and_pin(iPin, pPort, pin);
+  if(pPort)
+    pPort->SetPinValueHigh(pin);
+}
+
+void SetPinValueLow(const uint8_t iPin)
+{
+  Port* pPort = 0;
+  uint8_t pin = 100;
+  _get_port_and_pin(iPin, pPort, pin);
+  if(pPort)
+    pPort->SetPinValueLow(pin);
+}
 
 #endif
 

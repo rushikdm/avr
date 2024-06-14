@@ -20,7 +20,27 @@
        (ICP1)  PB0  14        15  PB1  (OC1A)
 
 -------------------------------------------------------
+
+#define HIGH 1
+#define LOW 0
+
+#define _SetPinAsInput(ddr, pos) DDR##ddr &= ~(1 << DDR##ddr##pos)
+#define SetPinAsInput(pin) _SetPinAsInput(pin)
+
+#define _SetPinAsOutput(ddr, pos) DDR##ddr |= (1 << DDR##ddr##pos)
+#define SetPinAsOutput(pin) _SetPinAsOutput(pin)
+
+#define _SetPinStateLow(port, pos) PORT##port &= ~(1 << PORT##port##pos)
+#define SetPinStateLow(pin) _SetPinStateLow(pin)
+
+#define _SetPinStateHigh(port, pos) PORT##port |= (1 << PORT##port##pos)
+#define SetPinStateHigh(pin) _SetPinStateHigh(pin)
+
+#define _GetPinState(port, pos) ((PIN##port & (1 << P##port##pos)) ? HIGH : LOW)
+#define GetPinState(pin) _GetPinState(pin)
+
 */
+
 #include <avr/io.h>
 
 #define  PB0  14

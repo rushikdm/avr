@@ -39,10 +39,6 @@
 #define _GetPinState(port, pos) ((PIN##port & (1 << P##port##pos)) ? HIGH : LOW)
 #define GetPinState(pin) _GetPinState(pin)
 
-*/
-
-#include <avr/io.h>
-
 #define  PB0  14
 #define  PB1  15
 #define  PB2  16 
@@ -68,6 +64,10 @@
 #define  PD5  11
 #define  PD6  12
 #define  PD7  13
+
+*/
+
+#include <avr/io.h>
 
 class Port
 {
@@ -168,7 +168,7 @@ public:
 
 struct Atmega8
 {
-  const uint8_t _atmega8a_pins[28] =  
+  const uint8_t m_atmega8a_pins[28] =  
   {   0x26  // 1  PC6 RESET 
     , 0x30  // 2  PD0
     , 0x31  // 3  PD1
@@ -199,10 +199,10 @@ struct Atmega8
     , 0x25  // 28 PC5
   };
 
-  PortB portB;
-  PortC portC;
-  PortD portD;
-  Port* _atmega8a_ports[3] = {&portB, &portC, &portD};
+  PortB m_portB;
+  PortC m_portC;
+  PortD m_portD;
+  Port* m_atmega8a_ports[3] = {&m_portB, &m_portC, &m_portD};
 };
 
 Atmega8 _atmega8;
@@ -215,11 +215,11 @@ void _get_port_and_pin(const uint8_t iPin, Port*& oPort, uint8_t& oPin)
   if( iPin > 28 || iPin == 7 || iPin == 8 || iPin == 20 || iPin == 21 || iPin == 22 ) 
     return;
 
-  oPin = _atmega8._atmega8a_pins[iPin-1] & 0x0F;
+  oPin = _atmega8.m_atmega8a_pins[iPin-1] & 0x0F;
 
-  uint8_t port = _atmega8._atmega8a_pins[iPin-1] & 0xF0;
+  uint8_t port = _atmega8.m_atmega8a_pins[iPin-1] & 0xF0;
   port = port >> 4;
-  oPort = _atmega8->_atmega8a_ports[port-1];
+  oPort = _atmega8.m_atmega8a_ports[port-1];
 }
 
 void SetPinAsInput(const uint8_t iPin)
@@ -270,4 +270,3 @@ void SetPinValueLow(const uint8_t iPin)
 }
 
 #endif
-

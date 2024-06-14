@@ -20,7 +20,7 @@ class PushButton
   public:
   PushButton(const uint8_t pin) : m_pin{pin}, m_press_count{0}, m_release_count{0}, m_lastEvent{NO_PRESS} { }
 
-  setup()
+  void setup()
   {
     SetPinAsInput(m_pin);
   }

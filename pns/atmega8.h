@@ -1,7 +1,53 @@
 #ifndef ATMEGA8_H
 #define ATMEGA8_H
 
+/* 
+---------------Atmega8 pin layout--------------------
+
+      (RESET)  PC6   1        28  PC5  (ADC5/SCL)
+        (RXD)  PD0   2        27  PC4  (ADC4/SDA)
+        (TXD)  PD1   3        26  PC3  (ADC3)
+       (INT0)  PD2   4        25  PC2  (ADC2)
+       (INT1)  PD3   5        24  PC1  (ADC1)
+     (XCK/T0)  PD4   6        23  PC0  (ADC0)
+               VCC   7        22  GND 
+               GND   8        21  AREF
+(XTAL1/TOSC1)  PB6   9        20  AVCC
+(XTAL2/TOSC2)  PB7  10        19  PB5  (SCK)
+         (T1)  PD5  11        18  PB4  (MISO)
+       (AIN0)  PD6  12        17  PB3  (MOSI/OC2)
+       (AIN1)  PD7  13        16  PB2  (SS/OC1B)
+       (ICP1)  PB0  14        15  PB1  (OC1A)
+
+-------------------------------------------------------
+*/
 #include <avr/io.h>
+
+#define  PB0  14
+#define  PB1  15
+#define  PB2  16 
+#define  PB3  17
+#define  PB4  18
+#define  PB5  19
+#define  PB6   9
+#define  PB7  10
+
+#define  PC0  23
+#define  PC1  24
+#define  PC2  25
+#define  PC3  26
+#define  PC4  27
+#define  PC5  28
+#define  PC6   1
+
+#define  PD0   2
+#define  PD1   3
+#define  PD2   4
+#define  PD3   5
+#define  PD4   6
+#define  PD5  11
+#define  PD6  12
+#define  PD7  13
 
 class Port
 {
@@ -161,11 +207,10 @@ const uint8_t _atmega8a_pins[28] =
  , 0x25  // 28 PC5
 };
 
-PortB porta;
-PortB portb;
-PortC portc;
-PortD portd;
-Port* _atmega8a_ports[4] = {&porta, &portb, &portc, &portd};
+PortB portB;
+PortC portC;
+PortD portD;
+Port* _atmega8a_ports[4] = {nullptr, &portB, &portC, &portD};
 
 void _get_port_and_pin(const uint8_t iPin, Port*& oPort, uint8_t* oPin)
 {

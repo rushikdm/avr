@@ -94,9 +94,9 @@ int main(void)
   setup();   
   while (1)
   {
-    if(SIMPLE_PRESS == increaseButton.process())
+    if(SIMPLE_PRESS == increasePWMButton.process())
       increasePWM();
-    else if(SIMPLE_PRESS == decreaseButton.process())
+    else if(SIMPLE_PRESS == decreasePWMButton.process())
       decreasePWM();
 
     pnsDisplay.multiplex();

@@ -46,7 +46,7 @@ class PNSDisplay
    
 public:  
   
-  PNSDisplay(const uint8_t ampere_value) : m_multiplex_index(0), digitInd(0), glowDigit(true), blink(true), count(0) 
+  PNSDisplay(const uint8_t ampere_value) : m_multiplex_index(0), digitInd(0), glowDigit(true), blink(false), count(0) 
   { 
     setAmpereValue(ampere_value);
   }
@@ -109,7 +109,13 @@ public:
     }
     
     if(glow)
+    {
       displayDigit(m_digits[m_multiplex_index]);
+      if(m_multiplex_index == 1)
+        SetPinValueHigh(m_fractionPin);
+      else
+        SetPinValueLow(m_fractionPin);
+    }
     else
     {
       const uint8_t prev_digit_pin = m_digitCCPins[m_multiplex_index > 0 ? (m_multiplex_index-1) : 1];
@@ -138,6 +144,11 @@ public:
         SetPinValueLow(m_segmentPins[ind]);
     }
     
+    if(m_multiplex_index == 1)
+      SetPinValueHigh(m_fractionPin);
+    else
+      SetPinValueLow(m_fractionPin);
+
     SetPinValueLow(m_digitCCPins[m_multiplex_index]);
   }
   

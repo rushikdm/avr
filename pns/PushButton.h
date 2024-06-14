@@ -18,7 +18,7 @@ class PushButton
   ReleaseType m_lastEvent;
 	
   public:
-  Button(const uint8_t pin) : m_pin{pin}, m_press_count{0}, m_release_count{0}, m_lastEvent{NO_PRESS} { }
+  PushButton(const uint8_t pin) : m_pin{pin}, m_press_count{0}, m_release_count{0}, m_lastEvent{NO_PRESS} { }
 
   setup()
   {

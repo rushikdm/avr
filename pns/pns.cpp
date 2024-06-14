@@ -36,6 +36,8 @@ volatile uint8_t pwm2_ind = 0;
 void setup();
 void setupPWM();
 void setupTimer();
+void increasePWM();
+void decreasePWM();
 
 void setup(void)
 { 
@@ -101,14 +103,14 @@ int main(void)
   }  
 }
 
-increasePWM()
+void increasePWM()
 {
   pnsRange.increase();
   OCR1A = pnsRange.getPWMValue();
   pnsDisplay.setAmpereValue(pnsRange.getAmpereValue());
 }
 
-decreasePWM()
+void decreasePWM()
 {
   pnsRange.decrease();
   OCR1A = pnsRange.getPWMValue();

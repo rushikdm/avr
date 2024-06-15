@@ -38,34 +38,33 @@
 
 #define _GetPinState(port, pos) ((PIN##port & (1 << P##port##pos)) ? HIGH : LOW)
 #define GetPinState(pin) _GetPinState(pin)
-
-#define  PB0  14
-#define  PB1  15
-#define  PB2  16 
-#define  PB3  17
-#define  PB4  18
-#define  PB5  19
-#define  PB6   9
-#define  PB7  10
-
-#define  PC0  23
-#define  PC1  24
-#define  PC2  25
-#define  PC3  26
-#define  PC4  27
-#define  PC5  28
-#define  PC6   1
-
-#define  PD0   2
-#define  PD1   3
-#define  PD2   4
-#define  PD3   5
-#define  PD4   6
-#define  PD5  11
-#define  PD6  12
-#define  PD7  13
-
 */
+#define  PIN_B0  14
+#define  PIN_B1  15
+#define  PIN_B2  16 
+#define  PIN_B3  17
+#define  PIN_B4  18
+#define  PIN_B5  19
+#define  PIN_B6   9
+#define  PIN_B7  10
+
+#define  PIN_C0  23
+#define  PIN_C1  24
+#define  PIN_C2  25
+#define  PIN_C3  26
+#define  PIN_C4  27
+#define  PIN_C5  28
+#define  PIN_C6   1
+
+#define  PIN_D0   2
+#define  PIN_D1   3
+#define  PIN_D2   4
+#define  PIN_D3   5
+#define  PIN_D4   6
+#define  PIN_D5  11
+#define  PIN_D6  12
+#define  PIN_D7  13
+
 
 #include <avr/io.h>
 
@@ -168,7 +167,7 @@ public:
 
 struct Atmega8
 {
-  const uint8_t m_atmega8a_pins[28] =  
+  const uint8_t m_pins[28] =  
   {   0x26  // 1  PC6 RESET 
     , 0x30  // 2  PD0
     , 0x31  // 3  PD1
@@ -202,7 +201,7 @@ struct Atmega8
   PortB m_portB;
   PortC m_portC;
   PortD m_portD;
-  Port* m_atmega8a_ports[3] = {&m_portB, &m_portC, &m_portD};
+  Port* m_ports[3] = {&m_portB, &m_portC, &m_portD};
 };
 
 Atmega8 _atmega8;
@@ -215,11 +214,11 @@ void _get_port_and_pin(const uint8_t iPin, Port*& oPort, uint8_t& oPin)
   if( iPin > 28 || iPin == 7 || iPin == 8 || iPin == 20 || iPin == 21 || iPin == 22 ) 
     return;
 
-  oPin = _atmega8.m_atmega8a_pins[iPin-1] & 0x0F;
+  oPin = _atmega8.m_pins[iPin-1] & 0x0F;
 
-  uint8_t port = _atmega8.m_atmega8a_pins[iPin-1] & 0xF0;
+  uint8_t port = _atmega8.m_pins[iPin-1] & 0xF0;
   port = port >> 4;
-  oPort = _atmega8.m_atmega8a_ports[port-1];
+  oPort = _atmega8.m_ports[port-1];
 }
 
 void SetPinAsInput(const uint8_t iPin)

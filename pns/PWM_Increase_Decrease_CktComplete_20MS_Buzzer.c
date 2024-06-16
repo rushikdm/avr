@@ -6,42 +6,32 @@
 #define LOW 0
 #define HIGH 1
 
-#define _SetPinAsInput(ddr, pos) DDR##ddr &= ~(1 << DDR##ddr##pos)
-#define SetPinAsInput(pin) _SetPinAsInput(pin)
+#define PWMPin   15
 
-#define _SetPinAsOutput(ddr, pos) DDR##ddr |= (1 << DDR##ddr##pos)
-#define SetPinAsOutput(pin) _SetPinAsOutput(pin)
+#define TwentyMSPin      3
+#define BuzzerPin        2
+#define CircuitCompletePin   14
 
-#define _SetPinStateLow(port, pos) PORT##port &= ~(1 << PORT##port##pos)
-#define SetPinStateLow(pin) _SetPinStateLow(pin)
+#define IncreasePWMPin       4
+#define DecreasePWMPin       5
 
-#define _SetPinStateHigh(port, pos) PORT##port |= (1 << PORT##port##pos)
-#define SetPinStateHigh(pin) _SetPinStateHigh(pin)
+#define DisplayPinA      28
+#define DisplayPinB      27
+#define DisplayPinC      26
+#define DisplayPinD      24
+#define DisplayPinE      23
+#define DisplayPinF      16
+#define DisplayPinG      17
+#define DisplayPinP      25
 
-#define _GetPinState(port, pos) ((PIN##port & (1 << P##port##pos)) ? HIGH : LOW)
-#define GetPinState(pin) _GetPinState(pin)
+#define DisplayPinCC1    18
+#define DisplayPinCC2    19
 
-
-#define PWMPin   B,1
-
-#define TwentyMSPin      D,1
-#define BuzzerPin        D,0
-#define CircuitCompletePin   B,0
-
-#define IncreasePWMPin       D,2
-#define DecreasePWMPin       D,3
-
-#define DisplayPinA      C,5
-#define DisplayPinB      C,4
-#define DisplayPinC      C,3
-#define DisplayPinD      C,1
-#define DisplayPinE      C,0
-#define DisplayPinF      B,2
-#define DisplayPinG      B,3
-#define DisplayPinP      C,2
-
-#define DisplayPinCC1    B,4
-#define DisplayPinCC2    B,5
+// RESET 1
+// GND   8   22
+// VCC   7
+// AVCC  20
+// AREF  21
 
 
 volatile uint8_t pwm_op_ind = 0;

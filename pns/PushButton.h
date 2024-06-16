@@ -42,13 +42,13 @@ class PushButton
       m_press_count = 0;
     }
 
-    if(m_press_count > 60)
+    if(m_press_count > 20)
       m_lastEvent = SIMPLE_PRESS;
 
     if(m_press_count > 800)
       m_lastEvent = LONG_PRESS;
 
-    if(m_release_count > 60)
+    if(m_release_count > 20)
     {
       ReleaseType temp = m_lastEvent;
       m_lastEvent = NO_PRESS;

@@ -22,8 +22,8 @@ avrdude -p ATmega8 -c arduino -P COM3 -b 19200 -U flash:w:pns.hex:i
 #define BuzzerPin            2
 #define CircuitCompletePin  14
 
-#define IncreasePWMPin       4
-#define DecreasePWMPin       5
+#define IncreasePWMPin       10
+#define DecreasePWMPin       4
 
 PushButton increasePWMButton(IncreasePWMPin);
 PushButton decreasePWMButton(DecreasePWMPin);

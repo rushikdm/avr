@@ -32,6 +32,7 @@ PNSRange pnsRange;
 PNSDisplay pnsDisplay(pnsRange.getAmpereValue());
 
 volatile uint8_t pwm2_ind = 0;
+volatile uint8_t twentyMS_ind = 0;
 
 void setup();
 void setupPWM();
@@ -119,13 +120,17 @@ void decreasePWM()
 
 ISR(TIMER2_COMP_vect)
 {
+  if(twentyMS_ind <= 0)
+    SetPinValueHigh(TwentyMSPin);
+  else
+    SetPinValueLow(TwentyMSPin);
+  
+  ++twentyMS_ind;
+  if(twentyMS_ind >= 50)
+	twentyMS_ind = 0;
+  
   if(IsPinHigh(CircuitCompletePin))
   {
-    if(pwm2_ind <= 0)
-      SetPinValueHigh(TwentyMSPin);
-    else
-      SetPinValueLow(TwentyMSPin);
-    
     if(pwm2_ind <= 8)
       SetPinValueHigh(BuzzerPin);
     else
@@ -136,8 +141,5 @@ ISR(TIMER2_COMP_vect)
       pwm2_ind = 0;
   }
   else
-  {
-    SetPinValueLow(TwentyMSPin);
-    SetPinValueLow(BuzzerPin);
-  }    
+    SetPinValueLow(BuzzerPin); 
 }
